@@ -10,7 +10,8 @@ dependencies = [
     "mypy",
     "flake8",
     "pydantic",
-    "pytest",
+    "fire",
+    "pytest"
 ]
 
 [build-system]
