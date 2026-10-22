@@ -4,3 +4,5 @@ venv/
 .mypy_cache/
 .venv/
 src/*.egg-info/
+data/raw/
+.vscode/
