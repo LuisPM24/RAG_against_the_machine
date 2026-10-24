@@ -1,7 +1,7 @@
 *This project has been created as part of the 42 curriculum by lupalomi*
 
 # Description
-A `RAG`, which stand for **Retrieval-Augmented Generation**, or in spanish **Recuperación Aumentada de Generación**, is a pattern that implements `parametric memory` and `Non parametric memory` learnt by the model during its training plus an external index that is queried at the time.
+RAG, which stands for **Retrieval-Augmented Generation**, or in spanish **Generación Aumentada por Recuperación**, is a pattern that combines `parametric memory`, learned by the model during training, with `on-parametric memory`, provided by an external index that is queried at inference time.
 
 A RAG system is divided in two parts: "**Indexing**" and "**Retrieval and Generation**"
 
@@ -9,7 +9,7 @@ A RAG system is divided in two parts: "**Indexing**" and "**Retrieval and Genera
     <img src="./assets/rag_diagram.png" />
 </div>
 
-The final quality depends far more on the recovery than on the model.
+The final quality depends not only on the model, but also on the quality of the retrieval process.
 
 ### Types of memory
 As it's been said, the pattern will implement two kinds of memory:
@@ -19,13 +19,13 @@ As it's been said, the pattern will implement two kinds of memory:
 - **Non parametric memory**: An external index that is consulted in real time. It can be updated, audited and cited.
 
 ### Why non parametric memory changes the problem?
-When you move the knowledge out of the model, its possible to update the sources wihtout training, the answer can be quoted and its possible control the access if an user doesn't have the correct permissions.
+When you move the knowledge out of the model, it's possible to update the sources without training, the answer can be quoted and it's possible control the access if a user doesn't have the correct permissions.
 
 ### When is it useful to implement a RAG system?
-A RAG system is only useful when **information is constantly changing**, **the model has not identified the desired knowledge** or **it is necessary to cite the source of a statement**.
+A RAG system is especially useful when **information is constantly changing, the model lacks the required knowledge or it is necessary to cite the source of a statement**.
 
 ### When is it not useful to implement a RAG system?
-A RAG system is not useful when **the output format is too specific**, **a repetitive task with many examples**, **the model doesn't understand the prompt** or **when the given documents are too small**.
+A RAG system may not be the best solution when **the task only requires a specific output format, a repetitive task with many examples** could be better addressed through fine-tuning, **the model doesn't understand the prompt or the available information is small enough to fit directly into the model's context**.
 
 ## Indexing
 
@@ -54,5 +54,5 @@ A RAG system is not useful when **the output format is too specific**, **a repet
 ## Indexing
 ⚠️ ​*Since my main language is spanish, many of these links are from spaniards websites* ⚠️​
 
-- [How create a RAG system with your own documents](https://underc0de.org/guias/inteligencia-artificial/como-crear-un-sistema-rag-con-documentos-propios/)
-- [What's an index in RAG data bases and how optimise it?](https://dinogeek.me/ES/RAG/Que-es-un-indice-en-las-bases-de-datos-RAG-y-como-optimizarlo.html)
+- [How create a RAG system with your own documents (in spanish)](https://underc0de.org/guias/inteligencia-artificial/como-crear-un-sistema-rag-con-documentos-propios/)
+- [What's an index in RAG data bases and how optimise it? (in spanish)](https://dinogeek.me/ES/RAG/Que-es-un-indice-en-las-bases-de-datos-RAG-y-como-optimizarlo.html)

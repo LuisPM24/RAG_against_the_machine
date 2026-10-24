@@ -18,14 +18,28 @@ run:
 	@uv run python -m src $(ARGS)
 	@echo "$(GREEN)\n'make run' command completed$(RESET)"
 
+help:
+	@echo "Available commands:"
+	@echo "  make install  - Install dependencies"
+	@echo "  make run      - Run the application"
+	@echo "  make help     - Print help sheet"
+	@echo "  make debug    - Run in debug mode"
+	@echo "  make clean    - Remove temporary files"
+	@echo "  make lint     - Run flake8 and mypy"
+
 debug:
 	@echo "$(YELLOW)\nRunning 'make debug' command$(RESET)\n"
 	@uv run python -m pdb -m src $(ARGS)
 	@echo "$(GREEN)\n'make debug' command completed$(RESET)"
 
 clean:
-	@rm -rf __pycache__ src/__pycache__
-	@rm -rf .mypy_cache .pytest_cache
+	@find . -type d \( \
+		-name "__pycache__" -o \
+		-name "*.egg-info" -o \
+		-name ".mypy_cache" -o \
+		-name ".pytest_cache" \
+	\) -prune -exec rm -rf {} +
+	@rm -rf build dist
 	@echo "$(GREEN)\n'make clean' command completed$(RESET)"
 
 test:
@@ -39,4 +53,5 @@ lint:
 	@uv run mypy . $(MYPY_FLAGS)
 	@echo "$(GREEN)\n'make lint' command completed$(RESET)"
 
-.PHONY: install run debug test clean lint
+.PHONY: install run help debug test clean lint
+.DEFAULT_GOAL := help
