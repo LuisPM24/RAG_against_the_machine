@@ -11,7 +11,8 @@ install:
 	@mkdir -p data/raw
 	@unzip -o vllm-0.10.1.zip -d data/raw
 	@uv sync
-	@echo "$(GREEN)\n'make install' command completed$(RESET)"
+	@echo "$(GREEN)\n'make install' command completed$(RESET)\n"
+	@$(MAKE) --no-print-directory help
 
 run:
 	@echo "$(YELLOW)\nRunning 'make run' command$(RESET)\n"
@@ -54,4 +55,4 @@ lint:
 	@echo "$(GREEN)\n'make lint' command completed$(RESET)"
 
 .PHONY: install run help debug test clean lint
-.DEFAULT_GOAL := help
+.DEFAULT_GOAL := install

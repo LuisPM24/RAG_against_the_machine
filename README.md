@@ -56,3 +56,5 @@ A RAG system may not be the best solution when **the task only requires a specif
 
 - [How create a RAG system with your own documents (in spanish)](https://underc0de.org/guias/inteligencia-artificial/como-crear-un-sistema-rag-con-documentos-propios/)
 - [What's an index in RAG data bases and how optimise it? (in spanish)](https://dinogeek.me/ES/RAG/Que-es-un-indice-en-las-bases-de-datos-RAG-y-como-optimizarlo.html)
+- [Document Indexing Using TF-IDF](https://medium.com/codex/document-indexing-using-tf-idf-189afd04a9fc)
+- [What is BM25 Full-Text Search?](https://spice.ai/learn/bm25-full-text-search)

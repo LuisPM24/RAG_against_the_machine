@@ -1,4 +1,5 @@
 import argparse
+from typing import Literal
 from pydantic import BaseModel, Field, ValidationError
 
 
@@ -6,10 +7,12 @@ class Parser(BaseModel):
     """
     Parser class:
     \n
-    Takes the parameters "--max_chunk_size" from the execution
-    command and checks whether the values provided are valid.
+    Takes the parameters "--max_chunk_size" and "--indexing"
+    from the execution command and checks whether the values
+    provided are valid.
     """
     max_chunk_size: int = Field(default=2000, gt=0, le=2000)
+    indexing_method: Literal["bm25", "tfidf"] = "bm25"
 
     @classmethod
     def get_args(cls) -> "Parser":
@@ -26,6 +29,14 @@ class Parser(BaseModel):
             default=2000,
             metavar="[1-2000]",
             help="Maximum chunk size in characters (default: 2000)"
+        )
+
+        new_args.add_argument(
+            "--indexing",
+            dest="indexing_method",
+            type=str,
+            default="bm25",
+            choices=["bm25", "tfidf"]
         )
 
         args = new_args.parse_args()
