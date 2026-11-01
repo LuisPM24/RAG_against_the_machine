@@ -9,7 +9,7 @@ MYPY_FLAGS = --warn-return-any --warn-unused-ignores \
 install:
 	@echo "$(YELLOW)\nRunning 'make install' command$(RESET)\n"
 	@mkdir -p data/raw
-	@unzip -o vllm-0.10.1.zip -d data/raw
+	@unzip -o data/archives/vllm-0.10.1.zip -d data/raw
 	@uv sync
 	@echo "$(GREEN)\n'make install' command completed$(RESET)\n"
 	@$(MAKE) --no-print-directory help

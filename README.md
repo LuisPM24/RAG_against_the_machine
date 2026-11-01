@@ -58,3 +58,4 @@ A RAG system may not be the best solution when **the task only requires a specif
 - [What's an index in RAG data bases and how optimise it? (in spanish)](https://dinogeek.me/ES/RAG/Que-es-un-indice-en-las-bases-de-datos-RAG-y-como-optimizarlo.html)
 - [Document Indexing Using TF-IDF](https://medium.com/codex/document-indexing-using-tf-idf-189afd04a9fc)
 - [What is BM25 Full-Text Search?](https://spice.ai/learn/bm25-full-text-search)
+- [How to Check If a Path Is a Directory in Python](https://labex.io/tutorials/python-how-to-check-if-a-path-is-a-directory-in-python-559557)

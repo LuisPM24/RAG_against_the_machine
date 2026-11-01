@@ -13,6 +13,7 @@ def main() -> None:
         )
         print(f"Max Chunk Size: {indexer.max_chunk_size}")
         print(f"Indexing method: {indexer.indexing_method}")
+        indexer.identify_files()
     except Exception as e:
         print(f"Error - {e}", file=sys.stderr)
         sys.exit(1)
