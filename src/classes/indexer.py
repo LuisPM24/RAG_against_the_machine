@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+from .chunkers import Chunk, Python_chunker, Text_chunker
 
 
 class Indexer():
@@ -13,8 +14,6 @@ class Indexer():
                  indexing_method: str = "bm25") -> None:
         self.max_chunk_size: int = max_chunk_size
         self.indexing_method = indexing_method
-        self.python_indexation: str = ""
-        self.text_indexation: str = ""
 
     def _identify_files(self, route: Path = Path('data/raw/vllm-0.10.1')
                         ) -> dict[str, list[Path]]:
@@ -52,7 +51,7 @@ class Indexer():
 
         return {'python': list(python_files), 'text': list(text_files)}
 
-    def chunking(self) -> None:
+    def chunking(self) -> dict[str, list[list[Chunk]]]:
         """
         #### chunking()
         \n
@@ -61,14 +60,22 @@ class Indexer():
         */data/chunks* folder
         """
         files: dict[str, list[Path]] = self._identify_files()
+        python_chunker = Python_chunker(self.max_chunk_size)
+        text_chunker = Text_chunker(self.max_chunk_size)
+        python_chunks: set[list[Chunk]] = set()
+        text_chunks: set[list[Chunk]] = set()
 
         if not files["python"] and files["text"]:
             print("No files were identified. Exiting the program")
+            return {}
 
         for lst in files:
             folder: Path = Path(os.path.join('data/chunks', lst))
+            folder.mkdir(exist_ok=True, parents=True)
 
             for file in files[lst]:
-                folder.mkdir(exist_ok=True, parents=True)
-
-        return
+                if file.suffix == ".py":
+                    python_chunker.chunk_file(file)
+                elif file.suffix == ".md" or file.suffix == ".txt":
+                    text_chunker.chunk_file(file)
+        return {'python': list(python_chunks), 'text': list(text_chunks)}

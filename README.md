@@ -61,3 +61,7 @@ A RAG system may not be the best solution when **the task only requires a specif
 - [How to Check If a Path Is a Directory in Python](https://labex.io/tutorials/python-how-to-check-if-a-path-is-a-directory-in-python-559557)
 - [The ultimate guide for chunking strategies](https://agenta.ai/blog/the-ultimate-guide-for-chunking-strategies)
 - [How to do chunking in python](https://thinkingneuron.com/how-to-do-chunking-in-python/)
+- [Building code-chunk: AST Aware Code Chunking](https://supermemory.ai/blog/building-code-chunk-ast-aware-code-chunking/)
+- [The Ultimate Text Chunking Toolkit: 15 Methods with Python Code](https://medium.com/data-science-collective/the-ultimate-text-chunking-toolkit-15-methods-with-python-code-9ef9d8f6a898)
+- [10 Chunking Strategies That Make or Break Your RAG Pipeline](https://dev.to/klement_gunndu/10-chunking-strategies-that-make-or-break-your-rag-pipeline-4cng)
+- [AST documentation](https://docs.python.org/3/library/ast.html)
