@@ -5,8 +5,6 @@ from pydantic import BaseModel, Field, ValidationError
 
 class Parser(BaseModel):
     """
-    Parser class:
-    \n
     Takes the parameters "--max_chunk_size" and "--indexing"
     from the execution command and checks whether the values
     provided are valid.

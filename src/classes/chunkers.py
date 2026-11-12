@@ -6,14 +6,12 @@ from pydantic import BaseModel, Field
 
 
 class Chunk(BaseModel):
-    """
-    #### Chunk class
-    \n
-    Amount of ***python code*** or ***text*** that has been properly cut
-    """
+    """Amount of ***python code*** or ***text*** that has been properly cut"""
     file_path: Path
     line_start: int = Field(default=1, ge=1)
     line_end: int = Field(default=1, ge=1)
+    first_character_index: int = Field(default=0, ge=0)
+    last_character_index: int = Field(default=0, ge=0)
     content: str = Field(default="")
 
     def update_content(self, new_end: int, new_content: str) -> None:
@@ -37,8 +35,6 @@ class Chunker(ABC):
 
 class Python_chunker(Chunker):
     """
-    #### Python_chunker class
-    \n
     Implements the '*chunk_file*' method to split a Python file
     in multiple **'Chunks'** using the AST library
     """
@@ -46,11 +42,7 @@ class Python_chunker(Chunker):
         super().__init__(max_chunk_size)
 
     def _node_start(self, node: ast.AST) -> int:
-        """
-        #### _node_start
-        \n
-        Get a node's first line, including decorators
-        """
+        """Get a node's first line, including decorators"""
         if node is None:
             return 0
 
@@ -66,11 +58,7 @@ class Python_chunker(Chunker):
         return start - 1
 
     def _get_boundaries(self, tree: ast.Module, lines: list[str]) -> list[int]:
-        """
-        #### _get_boundaries
-        \n
-        Find AST boundaries, including methods of large classes
-        """
+        """Find AST boundaries, including methods of large classes"""
         boundaries: set[int] = {0, len(lines)}
 
         for node in tree.body:
@@ -101,11 +89,7 @@ class Python_chunker(Chunker):
         return sorted(boundaries)
 
     def chunk_file(self, file: Path) -> list[Chunk]:
-        """
-        #### chunk_file
-        \n
-        Split a Python file using AST-based boundaries
-        """
+        """Split a Python file using AST-based boundaries"""
         try:
             content: str = file.read_text(encoding="utf-8")
             tree: ast.Module = ast.parse(content)
@@ -175,6 +159,14 @@ class Python_chunker(Chunker):
                         add_piece(piece, line_number, line_number)
 
         flush()
+
+        character_index: int = 0
+
+        for chunk in chunks:
+            chunk.first_character_index = character_index
+            character_index += len(chunk.content)
+            chunk.last_character_index = character_index
+
         return chunks
 
 
