@@ -2,22 +2,6 @@ from classes import Parser, Indexer
 import sys
 
 
-def mi_decorador(func):
-    def wrapper(*args, **kwargs):
-        print("Antes de ejecutar la función")
-        resultado = func(*args, **kwargs)
-        print("Después de ejecutar la función")
-        return resultado
-    return wrapper
-
-
-@mi_decorador
-def saludar(nombre: str) -> str:
-    """Devuelve un saludo personalizado."""
-    mensaje = f"Hola, {nombre}!"
-    return mensaje
-
-
 def main() -> None:
     """Main function. Runs the application"""
     try:

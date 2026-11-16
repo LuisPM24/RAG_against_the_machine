@@ -79,7 +79,15 @@ The strategy follows a hierarchical approach:
 6. **Content preservation:** Retains the original source code, including comments, whitespace, and indentation.
 
 #### Text strategy
+The ***Text Chunking Strategy*** uses a hierarchical **Markdown-based** approach to identify structural boundaries in Markdown and plain-text documents, such as headings and paragraphs. It aims to preserve the logical organization of the document while ensuring that every chunk respects the *max_chunk_size* given by the user.
 
+The strategy follows a hierarchical approach:
+1. **Document reading**: Reads text files using UTF-8 encoding while preserving the original line breaks.
+2. **Boundary detection**: Identifies Markdown headings using regular expressions, excluding headings inside fenced code blocks.
+3. **Paragraph splitting**: Divides oversized sections into paragraphs using blank lines as boundaries.
+4. **Dynamic grouping**: Combines consecutive text regions as long as their total size remains within the limit.
+5. **Fallback splitting**: Divides oversized paragraphs by complete lines, resorting to character-level splitting when necessary.
+6. **Content preservation**: Retains the original document content, including whitespace, line breaks, and code blocks.
 
 ## System Architecture
 

@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+from tqdm import tqdm
 from .chunkers import Chunk, Python_chunker, Text_chunker
 
 
@@ -64,10 +65,8 @@ class Indexer():
             return {}
 
         for lst in files:
-            folder: Path = Path(os.path.join('data/chunks', lst))
-            folder.mkdir(exist_ok=True, parents=True)
-
-            for file in files[lst]:
+            for file in tqdm(files[lst], desc=f"Chunking {lst}",
+                             unit="file"):
                 if file.suffix == ".py":
                     python_chunks.append(python_chunker.chunk_file(file))
                 elif file.suffix == ".md" or file.suffix == ".txt":
