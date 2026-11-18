@@ -1,4 +1,4 @@
-from classes import Parser, Indexer
+from indexing import Parser, Indexer
 import sys
 
 

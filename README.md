@@ -28,7 +28,12 @@ A RAG system is especially useful when **information is constantly changing, the
 A RAG system may not be the best solution when **the task only requires a specific output format, a repetitive task with many examples** could be better addressed through fine-tuning, **the model doesn't understand the prompt or the available information is small enough to fit directly into the model's context**.
 
 ## Indexing
+The **Indexing class** gets all files from `data/raw/vllm-0.10.1` folder and generates **a chunk list**. At the end, this class will return a `list[list[Chunk]]` that represents all valid files from the route.
 
+<div align="center">
+    <img src="./assets/indexer.png" />
+<p><b>Visual scheme of the Indexer</b></p>
+</div>
 
 ### Chunking Strategy
 Inside the `chunkers.py` file, it's possible find the **class Chunker** that defines the basic structure of each strategy, and the **class Chunk** that contains the neccesary knowledge to split a file in multiple sections.
@@ -66,6 +71,7 @@ class Chunker(ABC):
     def chunk_file(self, file: Path) -> list[Chunk]:
         pass
 ```
+The strategy will be selected by the file suffix.
 
 #### Python strategy
 The ***Python Chunking Strategy*** uses an **AST-based strategy** to identify structural boundaries in source code, such as imports, functions, and classes. It aims to preserve the logical organization of the source code while ensuring that every chunk respects the *max_chunk_size* given by the user.
@@ -79,19 +85,27 @@ The strategy follows a hierarchical approach:
 6. **Content preservation:** Retains the original source code, including comments, whitespace, and indentation.
 
 #### Text strategy
-The ***Text Chunking Strategy*** uses a hierarchical **Markdown-based** approach to identify structural boundaries in Markdown and plain-text documents, such as headings and paragraphs. It aims to preserve the logical organization of the document while ensuring that every chunk respects the *max_chunk_size* given by the user.
+The ***Text Chunking Strategy*** uses an **hierarchical Markdown-based approach** to identify structural boundaries in Markdown and plain-text documents, such as headings and paragraphs. It aims to preserve the logical organization of the document while ensuring that every chunk respects the *max_chunk_size* given by the user.
 
 The strategy follows a hierarchical approach:
-1. **Document reading**: Reads text files using UTF-8 encoding while preserving the original line breaks.
+1. **Document reading**: Reads text files, using `UTF-8 encoding`, while preserving the original line breaks.
 2. **Boundary detection**: Identifies Markdown headings using regular expressions, excluding headings inside fenced code blocks.
 3. **Paragraph splitting**: Divides oversized sections into paragraphs using blank lines as boundaries.
 4. **Dynamic grouping**: Combines consecutive text regions as long as their total size remains within the limit.
 5. **Fallback splitting**: Divides oversized paragraphs by complete lines, resorting to character-level splitting when necessary.
 6. **Content preservation**: Retains the original document content, including whitespace, line breaks, and code blocks.
 
-## System Architecture
+## Data Processing
+
+### Tokenizer
+
+### TF-IDF
+
+### BM25
 
 ## Retrieval Method
+
+## System Architecture
 
 ## Performance Analysis
 
