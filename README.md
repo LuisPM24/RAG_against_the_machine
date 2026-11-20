@@ -95,15 +95,16 @@ The strategy follows a hierarchical approach:
 5. **Fallback splitting**: Divides oversized paragraphs by complete lines, resorting to character-level splitting when necessary.
 6. **Content preservation**: Retains the original document content, including whitespace, line breaks, and code blocks.
 
-## Data Processing
 
-### Tokenizer
+#### Tokenizer
 
-### TF-IDF
+##### TF-IDF
 
-### BM25
+##### BM25
 
 ## Retrieval Method
+
+## Generation
 
 ## System Architecture
 
