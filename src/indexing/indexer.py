@@ -9,10 +9,9 @@ class Indexer():
     Roams the 'data/raw/' folder in search of relevant files
     from the 'vLLM' repository.
     """
-    def __init__(self, max_chunk_size: int = 2000,
-                 indexing_method: str = "bm25") -> None:
+    def __init__(self, max_chunk_size: int = 2000) -> None:
         self.max_chunk_size: int = max_chunk_size
-        self.indexing_method = indexing_method
+        self.chunks: dict[str, list[list[Chunk]]] = {}
 
     def _identify_files(self, route: Path = Path('data/raw/vllm-0.10.1')
                         ) -> dict[str, list[Path]]:
@@ -48,7 +47,7 @@ class Indexer():
 
         return {'python': list(python_files), 'text': list(text_files)}
 
-    def chunking(self) -> dict[str, list[list[Chunk]]]:
+    def chunking(self) -> list[list[Chunk]]:
         """
         Applies a chunking strategy with a given
         self.max_chunk_size. Chunks are saved in the
@@ -62,7 +61,7 @@ class Indexer():
 
         if not files["python"] and files["text"]:
             print("No files were identified. Exiting the program")
-            return {}
+            return []
 
         for lst in files:
             for file in tqdm(files[lst], desc=f"Chunking {lst}",
@@ -71,4 +70,4 @@ class Indexer():
                     python_chunks.append(python_chunker.chunk_file(file))
                 elif file.suffix == ".md" or file.suffix == ".txt":
                     text_chunks.append(text_chunker.chunk_file(file))
-        return {'python': list(python_chunks), 'text': list(text_chunks)}
+        return list(python_chunks) + list(text_chunks)
