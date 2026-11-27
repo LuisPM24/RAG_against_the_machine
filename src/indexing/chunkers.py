@@ -14,18 +14,11 @@ class Chunk(BaseModel):
     last_character_index: int = Field(default=0, ge=0)
     content: str = Field(default="")
 
-    def update_content(self, new_end: int, new_content: str) -> None:
-        if new_end:
-            self.line_end = new_end
-
-        if new_content:
-            self.content = new_content
-
 
 class Chunker(ABC):
     def __init__(self, max_chunk_size: int = 2000) -> None:
-        if max_chunk_size <= 0:
-            raise ValueError("max_chunk_size must be positive")
+        if not 1 <= max_chunk_size <= 2000:
+            raise ValueError("max_chunk_size must be between 1 and 2000")
         self.max_chunk_size = max_chunk_size
 
     @abstractmethod
@@ -33,7 +26,7 @@ class Chunker(ABC):
         pass
 
 
-class Python_chunker(Chunker):
+class PythonChunker(Chunker):
     """
     Implements the '*chunk_file*' method to split a Python file
     in multiple **'Chunks'** using the AST library
@@ -41,20 +34,15 @@ class Python_chunker(Chunker):
     def __init__(self, max_chunk_size: int = 2000) -> None:
         super().__init__(max_chunk_size)
 
-    def _node_start(self, node: ast.AST) -> int:
-        """Get a node's first line, including decorators"""
-        if node is None:
-            return 0
+    def _node_start(self, node: ast.stmt) -> int:
+        """Get a node's first line, including decorators."""
+        start: int = node.lineno
 
-        start: int = node.lineno  # type: ignore
-
-        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef,
-                             ast.ClassDef)):
+        if isinstance(node,
+                      (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
             if node.decorator_list:
-                start = min(
-                    decorator.lineno
-                    for decorator in node.decorator_list
-                )
+                start = min(decorator.lineno
+                            for decorator in node.decorator_list)
         return start - 1
 
     def _get_boundaries(self, tree: ast.Module, lines: list[str]) -> list[int]:
@@ -170,7 +158,7 @@ class Python_chunker(Chunker):
         return chunks
 
 
-class Text_chunker(Chunker):
+class TextChunker(Chunker):
     """Split Markdown and text files into structured chunks."""
 
     def _scan_fence(self, line: str, fence: str | None) -> str | None:

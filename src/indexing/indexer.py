@@ -1,73 +1,64 @@
-import os
 from pathlib import Path
 from tqdm import tqdm
-from .chunkers import Chunk, Python_chunker, Text_chunker
+from .chunkers import Chunk, PythonChunker, TextChunker
 
 
-class Indexer():
-    """
-    Roams the 'data/raw/' folder in search of relevant files
-    from the 'vLLM' repository.
-    """
-    def __init__(self, max_chunk_size: int = 2000) -> None:
+class Indexer:
+    """Identify and split supported files from a corpus."""
+
+    def __init__(self, max_chunk_size: int = 2000,
+                 corpus_path: Path = Path("data/raw")) -> None:
+        """Initialize the corpus path and chunk size."""
         self.max_chunk_size: int = max_chunk_size
-        self.chunks: dict[str, list[list[Chunk]]] = {}
+        self.corpus_path: Path = corpus_path
 
-    def _identify_files(self, route: Path = Path('data/raw/vllm-0.10.1')
-                        ) -> dict[str, list[Path]]:
-        """
-        Gets all the python files (.py) and the text
-        files (.txt/.md), and returns them as a dictionary
-        *dict[str, list[str]]*.
-        """
-        content: list[str] = os.listdir(route)
+    def _identify_files(self, route: Path) -> dict[str, list[Path]]:
+        """Identify supported files recursively."""
+        files: dict[str, list[Path]] = {"python": [], "text": []}
 
-        python_files: set[Path] = set()
-        text_files: set[Path] = set()
+        if not route.is_dir():
+            raise FileNotFoundError(f"Invalid corpus path: {route}")
 
-        for file in content:
-            file_path = Path(os.path.join(route, file))
+        for file in sorted(route.rglob("*")):
+            if not file.is_file():
+                continue
 
-            if os.path.isfile(file_path):
-                try:
-                    with open(file_path, 'r', encoding='utf-8') as fd:
-                        if fd.read():
-                            if file.endswith('.py'):
-                                python_files.add(Path(file_path))
-                            elif file.endswith(('.md', '.txt')):
-                                text_files.add(Path(file_path))
-                except (OSError, UnicodeError):
-                    continue
-            elif os.path.isdir(file_path):
-                route_files: dict[str, list[Path]] = (
-                    self._identify_files(file_path)
-                )
-                python_files.update(route_files['python'])
-                text_files.update(route_files['text'])
+            if file.suffix == ".py":
+                files["python"].append(file)
+            elif file.suffix in (".md", ".txt"):
+                files["text"].append(file)
 
-        return {'python': list(python_files), 'text': list(text_files)}
+        return files
 
     def chunking(self) -> list[list[Chunk]]:
-        """
-        Applies a chunking strategy with a given
-        self.max_chunk_size. Chunks are saved in the
-        */data/chunks* folder
-        """
-        files: dict[str, list[Path]] = self._identify_files()
-        python_chunker = Python_chunker(self.max_chunk_size)
-        text_chunker = Text_chunker(self.max_chunk_size)
-        python_chunks: list[list[Chunk]] = []
-        text_chunks: list[list[Chunk]] = []
+        """Apply the appropriate chunking strategy to each file."""
+        files = self._identify_files(self.corpus_path)
 
-        if not files["python"] and files["text"]:
-            print("No files were identified. Exiting the program")
-            return []
+        python_chunker = PythonChunker(self.max_chunk_size)
+        text_chunker = TextChunker(self.max_chunk_size)
 
-        for lst in files:
-            for file in tqdm(files[lst], desc=f"Chunking {lst}",
-                             unit="file"):
-                if file.suffix == ".py":
-                    python_chunks.append(python_chunker.chunk_file(file))
-                elif file.suffix == ".md" or file.suffix == ".txt":
-                    text_chunks.append(text_chunker.chunk_file(file))
-        return list(python_chunks) + list(text_chunks)
+        documents: list[list[Chunk]] = []
+
+        if not files["python"] and not files["text"]:
+            print("No supported files were identified")
+            return documents
+
+        for file in tqdm(
+            files["python"],
+            desc="Chunking Python files",
+            unit="file"
+        ):
+            chunks = python_chunker.chunk_file(file)
+            if chunks:
+                documents.append(chunks)
+
+        for file in tqdm(
+            files["text"],
+            desc="Chunking text files",
+            unit="file"
+        ):
+            chunks = text_chunker.chunk_file(file)
+            if chunks:
+                documents.append(chunks)
+
+        return documents

@@ -1,3 +1,3 @@
-from .base_index import tfidfIndex
+from .base_index import TFIDFIndex
 
-__all__ = ["tfidfIndex"]
+__all__ = ["TFIDFIndex"]
