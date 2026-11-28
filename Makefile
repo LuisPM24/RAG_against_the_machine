@@ -16,7 +16,7 @@ install:
 
 run:
 	@echo "$(YELLOW)\nRunning 'make run' command$(RESET)\n"
-	@uv run python -m src $(ARGS)
+	@uv run python -m src
 	@echo "$(GREEN)\n'make run' command completed$(RESET)"
 
 help:

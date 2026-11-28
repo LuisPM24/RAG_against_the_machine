@@ -1,8 +1,31 @@
 import math
 from abc import ABC, abstractmethod
 from collections import Counter
+from pydantic import BaseModel, model_validator
+from pathlib import Path
 from indexing import Chunk
 from .tokenizer import Tokenizer
+
+
+class TFIDFIndexData(BaseModel):
+    """Represent the persistent data of a TF-IDF index."""
+
+    docs: list[list[Chunk]]
+    vectors: list[list[dict[str, float]]]
+    idf: dict[str, float]
+
+    @model_validator(mode="after")
+    def validate_structure(self) -> "TFIDFIndexData":
+        """Validate the correspondence between chunks and vectors."""
+
+        if len(self.docs) != len(self.vectors):
+            raise ValueError("Invalid number of documents")
+
+        for doc, vectors in zip(self.docs, self.vectors):
+            if len(doc) != len(vectors):
+                raise ValueError("Invalid number of chunk vectors")
+
+        return self
 
 
 class BaseIndex(ABC):
@@ -133,9 +156,30 @@ class TFIDFIndex(BaseIndex):
         return [chk for _, chk in results[:k]]
 
     def save(self, path: str) -> None:
-        """Save the index to disk."""
-        pass
+        """Save the index to a JSON file."""
+
+        index_path: Path = Path(path)
+
+        index_path.parent.mkdir(parents=True, exist_ok=True)
+
+        data = TFIDFIndexData(
+            docs=self.docs,
+            vectors=self.vectors,
+            idf=self.idf
+        )
+        with index_path.open("w", encoding="utf-8") as file:
+            file.write(data.model_dump_json())
 
     def load(self, path: str) -> None:
-        """Load a previously saved index."""
-        pass
+        """Load and validate a previously saved TF-IDF index."""
+
+        index_path: Path = Path(path)
+
+        with index_path.open("r", encoding="utf-8") as file:
+            data = TFIDFIndexData.model_validate_json(
+                file.read()
+            )
+
+        self.docs = data.docs
+        self.vectors = data.vectors
+        self.idf = data.idf

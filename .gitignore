@@ -4,5 +4,6 @@ __pycache__/
 .venv/
 src/*.egg-info/
 data/raw/
-data/chunks/
+data/processed
+data/output
 .vscode/
